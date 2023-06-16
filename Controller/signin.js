@@ -24,13 +24,13 @@ const signup = async (req,res)=>{
             password: hashpassword
         })
         
-        const insert = await userobj.save();
+         await userobj.save();
 
-        return res.status(200).send(insert)
+        return res.json({status:"ok"})
     }
     catch(err){
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.status(500).send("credentails you entered are not valid check and try again")
     }
 }
 
@@ -38,7 +38,7 @@ const login = async (req,res)=>{
     const {email,password}=req.body;
     const user = await User.findOne({email});
     if(!user){
-       return res.send("invalid username ")
+       return res.send("invalid mailID ")
     }
     const checkpassword = await bcrypt.compare(password, user.password);
     if(checkpassword){
@@ -76,4 +76,12 @@ const bookdemo = async (req,res)=>{
     }
 }
 
-module.exports = {signup,login,bookdemo};
+const forgotpassword= async(req,res)=>{
+    const filter = req.body.filter;
+    const updateData = req.body.updateData;
+    const formatFilter = {password: filter.password}
+    const formatUpdate = {$push: {password: updateData.password }}
+    console.log(formatFilter, formatUpdate);
+}
+
+module.exports = {signup,login,bookdemo,forgotpassword};
