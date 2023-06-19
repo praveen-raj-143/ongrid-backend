@@ -38,15 +38,17 @@ const login = async (req,res)=>{
     const {email,password}=req.body;
     const user = await User.findOne({email});
     if(!user){
-       return res.send("invalid mailID ")
+        return res.json({status:"error"})
     }
     const checkpassword = await bcrypt.compare(password, user.password);
     if(checkpassword){
-        const token = jwt.sign({},JWT_SECRET)
+        const token = jwt.sign({email: user.email},JWT_SECRET, {
+            expiresIn:20,
+        })
         
         return res.json({status:"ok", data:token})
     }else{
-        return res.send("invalid password ")
+        return res.json({status:"error"})
     }
     
 }
@@ -76,12 +78,29 @@ const bookdemo = async (req,res)=>{
     }
 }
 
-// const forgotpassword= async(req,res)=>{
-//     const filter = req.body.filter;
-//     const updateData = req.body.updateData;
-//     const formatFilter = {password: filter.password}
-//     const formatUpdate = {$push: {password: updateData.password }}
-//     console.log(formatFilter, formatUpdate);
-// }
+const userdetails= async (req,res)=>{
+    const {token}=req.body;
+    try {
+        const user = jwt.verify(token, JWT_SECRET, (err,res)=>{
+            if(err){
+                return "token expired";
+            }
+            return res;
+        });
+        if(user=="token expires"){
+            return res.json({status: "error", data:"token expired"})
+        }
+        const useremail = user.email;
+        User.findOne({email: useremail})
+        .then((data)=>{
+            res.send({status: "ok", data: data});
+        })
+        .catch((error)=>{
+            res.send({status: "error", data: data});
+        })
+    } catch (error) {
+        
+    }
+}
 
-module.exports = {signup,login,bookdemo};
+module.exports = {signup,login,bookdemo,userdetails};
