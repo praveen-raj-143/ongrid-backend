@@ -96,7 +96,7 @@ const userdetails= async (req,res)=>{
             res.send({status: "ok", data: data});
         })
         .catch((error)=>{
-            res.send({status: "error", data: data});
+            res.send(error);
         })
     } catch (error) {
         
