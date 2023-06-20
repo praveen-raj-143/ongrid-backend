@@ -30,7 +30,7 @@ const signup = async (req,res)=>{
     }
     catch(err){
         console.log(err)
-        return res.status(500).send("credentails you entered are not valid check and try again")
+        return res.status(500).send("invalid details")
     }
 }
 
@@ -43,7 +43,7 @@ const login = async (req,res)=>{
     const checkpassword = await bcrypt.compare(password, user.password);
     if(checkpassword){
         const token = jwt.sign({email: user.email},JWT_SECRET, {
-            expiresIn:20,
+            expiresIn:'1d',
         })
         
         return res.json({status:"ok", data:token})
@@ -65,12 +65,12 @@ const bookdemo = async (req,res)=>{
             name,
             email,
             phonenumber,
-            organisation,
+            organisation, 
             aboutongrid
         })
         const bookinsert = await bookdemoobj.save();
         
-        return res.status(200).json("demo booked").send(bookinsert)
+        return res.status(200).send(bookinsert)
     }
     catch(err){
         console.log(err)
