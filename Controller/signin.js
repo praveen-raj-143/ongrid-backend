@@ -13,7 +13,7 @@ const signup = async (req,res)=>{
     try{
         const olduser = await User.findOne({email});
         if(olduser){
-          return  res.send("user already exists");
+          return  res.json({status:"olduser"})
         }
         const salt = await bcrypt.genSalt(10)
         const hashpassword = await bcrypt.hash(password,salt)
