@@ -70,11 +70,11 @@ const bookdemo = async (req,res)=>{
         })
         const bookinsert = await bookdemoobj.save();
         
-        return res.status(200).send(bookinsert)
+        return res.json({status:"ok"})
     }
     catch(err){
         console.log(err)
-        return res.status(500).send("something went wrong")
+        return res.json({status:"error"})
     }
 }
 
